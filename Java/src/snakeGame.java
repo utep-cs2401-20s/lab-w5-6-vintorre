@@ -16,15 +16,16 @@ public class snakeGame {
         int sizer = g.length;
         int sizec = g[0].length;
 
-        game = new boolean[sizer][sizec];
 
-        headPosition = new int[2];
+
+        this.game = new boolean[sizer][sizec];
+        this.headPosition = new int[2];
 
         headPosition[0] = x;
         headPosition[1] = y;
 
         for(int i = 0; i < g.length; i++){
-            for(int j = 0; j <g.length; j++){
+            for(int j = 0; j <g[0].length; j++){
                 game[i][j] = g[i][j];
             }
         }
@@ -38,21 +39,21 @@ public class snakeGame {
 
     public int[] findTailExhaustive(){
         resetCounters();
-        int countEx = 0;
         int snakeLength = 0;
-        int [] tailPosition = new int[2];
+        int tailX = 0;
+        int tailY = 0;
         int[] tailReturn = new int[3];
 
         for(int i = 0; i < game.length; i++){
             for(int j = 0; j < game[i].length; j++){
-                countEx++;
-                if(game[i][j] == false)
-                    continue;
+                exhaustiveChecks++;
                 if(game[i][j] == true) {
                     snakeLength++;
-                    if((neighbors(i,j) == 1) && (i != headPosition[0]) && (j != headPosition[1])) {
-                        tailPosition[0] = i;
-                        tailPosition[1] = j;
+                    if((neighbors(i,j) == 1) && ((i != headPosition[0]) || (j != headPosition[1]))){
+                        tailX = i;
+                        tailY = j;
+
+
                     }
                     if(neighbors(i, j) == 2)
                         continue;
@@ -62,8 +63,8 @@ public class snakeGame {
             }
         }
 
-        tailReturn[0] = tailPosition[0];
-        tailReturn[1] = tailPosition[1];
+        tailReturn[0] = tailX;
+        tailReturn[1] = tailY;
         tailReturn[2] = snakeLength;
         return tailReturn;
 
@@ -90,15 +91,65 @@ public class snakeGame {
             if (this.game[r + 1][c] == true)
                 count++;
         }
-
         return count;
     }
 
+    public int[] findTailRecursive(){
+        resetCounters();
+        int[] tailReturn = new int[3];
+        int tailX;
+        int tailY;
+        int snakeLength = 0;
+        int headX = headPosition[0];
+        int headY = headPosition[1];
+        int[] currentPosition = {headPosition[0], headPosition[1]};
+        int[] previousPosition = {headPosition[0], headPosition[1]};
+
+        if(headX-1 >= 0){
+            if (this.game[headX - 1][headY] == true)
+                snakeLength++;
+                currentPosition[0] = (headX - 1);
+                currentPosition[1] = (headY);
+                if(currentPosition[0] != previousPosition[0] || currentPosition[1] != previousPosition[1]) {
+                    findTailRecursive();
+                }
+        }
+
+        if (headY - 1 >= 0)
+            if (this.game[headX][headY - 1] == true)
+                snakeLength++;
+
+        if(headY+1< game[0].length)
+            if (this.game[headX][headY + 1] == true)
+                snakeLength++;
+
+        if(headX+1 < game.length) {
+            if (this.game[headX + 1][headY] == true)
+                snakeLength++;
+        }
+
+
+        return tailReturn;
+    }
+
+    public static int getRecursiveChecks(){
+        return recursiveChecks;
+    }
+
+    public static int getExhaustiveChecks(){
+        return exhaustiveChecks;
+    }
+
     public static void main(String[] args) {
-        boolean[][] test = {{true, true, true, false},{true, false, true, false},{true, false, true, false},{true, false, true, false}};
+        boolean[][] test = {{true, true, true, false},
+                            {true, false, true, false},
+                            {true, false, true, false},
+                            {true, false, true, false}};
 
         snakeGame S = new snakeGame(test, 3, 0);
-        System.out.println(S.findTailExhaustive());
+        for(int i = 0;  i < S.findTailExhaustive().length; i ++){
+            System.out.println(S.findTailExhaustive()[i]);
+        }
     }
 
 }
