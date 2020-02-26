@@ -112,6 +112,7 @@ public class snakeGame {
                 currentPosition[1] = (headY);
                 if(currentPosition[0] != previousPosition[0] || currentPosition[1] != previousPosition[1]) {
                     findTailRecursive();
+                    //
                 }
         }
 
