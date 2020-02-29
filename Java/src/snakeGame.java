@@ -95,32 +95,24 @@ public class snakeGame {
     }
 
     private int[] findTailRecursive(int[] currentPosition, int[] previousPosition){
-        resetCounters();
         recursiveChecks++;
+        System.out.println("Check is at " + currentPosition[0] + currentPosition[1]);
+        System.out.println("Current position is " + currentPosition[0] + currentPosition[1]);
+        System.out.println("Previous position is " + previousPosition[0] + previousPosition[1]);
         int[] tailReturn = new int[3];
         int snakeLength = 0;
         int headX = headPosition[0];
         int headY = headPosition[1];
         int[] temp = {currentPosition[0],currentPosition[1]};
 
-        if((neighbors(currentPosition[0],currentPosition[1]) == 1) && ((currentPosition[0] != headX) || (currentPosition[1] != headY))){
-            tailReturn[0] = currentPosition[0];
-            tailReturn[1] = currentPosition[1];
-            tailReturn[2] = snakeLength;
-            return tailReturn;
-        }
 
-        if(headX-1 >= 0){
-            if (this.game[headX - 1][headY] == true) {
-                snakeLength++;
+        if(currentPosition[0]-1 >= 0){
+            if (this.game[currentPosition[0] - 1][currentPosition[1]] == true) {
                 temp[0] = (currentPosition[0] - 1); //make different temporary array for neighbor
                 temp[1] = (currentPosition[1]);
                 if (temp[0] != previousPosition[0] || temp[1] != previousPosition[1]) {
-                    previousPosition[0] = currentPosition[0];
-                    previousPosition[1] = currentPosition[1];
-                    currentPosition[0] = temp[0];
-                    currentPosition[1] = temp[1];
-                    return findTailRecursive(currentPosition, previousPosition);
+                    snakeLength++;
+                    return findTailRecursive(temp, currentPosition);
                 }
 
 
@@ -131,54 +123,51 @@ public class snakeGame {
         //private is the one that is actually recursive
         //public is only 2 lines
 
-        if (headY - 1 >= 0) {
-            if (this.game[headX][headY - 1] == true) {
-                snakeLength++;
+        if (currentPosition[1] - 1 >= 0) {
+            if (this.game[currentPosition[0]][currentPosition[1] - 1] == true) {
                 temp[0] = (currentPosition[0]); //make different temporary array for neighbor
                 temp[1] = (currentPosition[1] - 1);
                 if (temp[0] != previousPosition[0] || temp[1] != previousPosition[1]) {
-                    previousPosition[0] = currentPosition[0];
-                    previousPosition[1] = currentPosition[1];
-                    currentPosition[0] = temp[0];
-                    currentPosition[1] = temp[1];
-                    return findTailRecursive(currentPosition, previousPosition);
+                    snakeLength++;
+                    return findTailRecursive(temp, currentPosition);
                 }
             }
         }
 
-        if(headY+1< game[0].length) {
-            if (this.game[headX][headY + 1] == true){
-                snakeLength++;
+        if(currentPosition[1]+1< game[0].length) {
+            if (this.game[currentPosition[0]][currentPosition[1] + 1] == true){
                 temp[0] = (currentPosition[0]);
                 temp[1] = (currentPosition[1] + 1);
             if (temp[0] != previousPosition[0] || temp[1] != previousPosition[1]) {
-                previousPosition[0] = currentPosition[0];
-                previousPosition[1] = currentPosition[1];
-                currentPosition[0] = temp[0];
-                currentPosition[1] = temp[1];
-                return findTailRecursive(currentPosition, previousPosition);
+                snakeLength++;
+                return findTailRecursive(temp, currentPosition);
             }
             }
         }
-        if(headX+1 < game.length) {
-            if (this.game[headX + 1][headY] == true) {
-                snakeLength++;
+        if(currentPosition[0]+1 < game.length) {
+            if (this.game[currentPosition[0] + 1][currentPosition[1]] == true) {
                 temp[0] = (currentPosition[0] + 1);
                 temp[1] = (currentPosition[1]);
                 if (temp[0] != previousPosition[0] || temp[1] != previousPosition[1]) {
-                    previousPosition[0] = currentPosition[0];
-                    previousPosition[1] = currentPosition[1];
-                    currentPosition[0] = temp[0];
-                    currentPosition[1] = temp[1];
-                    return findTailRecursive(currentPosition, previousPosition);
+                    snakeLength++;
+                    return findTailRecursive(temp , currentPosition);
                 }
             }
 
         }
+
+        if((neighbors(currentPosition[0],currentPosition[1]) == 1) && ((currentPosition[0] != headX) || (currentPosition[1] != headY))){
+            tailReturn[0] = currentPosition[0];
+            tailReturn[1] = currentPosition[1];
+            tailReturn[2] = snakeLength;
+            return tailReturn;
+        }
+
         return tailReturn;
     }
 
     public int[] findTailRecursive(){
+        resetCounters();
         return(findTailRecursive(headPosition,headPosition));
     }
 
